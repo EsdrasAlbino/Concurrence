@@ -20,11 +20,12 @@ public class CarImplements implements Runnable {
             s.acquire();
             System.out.println(id + " Carro indo para " + direction);
             Thread.sleep(1000);
+            System.out.println(id + " Carro saiu da ponte na direção: " + direction);
             s.release();
         } catch (InterruptedException e) {
             e.printStackTrace();
             System.out.println(id + " Carro foi interrompido na ponte na direção: " + direction);
         }
-        System.out.println(id + " Carro saiu da ponte na direção: " + direction);
+
     }
 }

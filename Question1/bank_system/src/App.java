@@ -2,7 +2,7 @@ import bankConfig.Deposit;
 import bankConfig.Substract;
 import bankConfig.BankAccount;
 
-public class App {
+public class    App {
     public static void main(String[] args) {
         BankAccount acc = new BankAccount(1000);
 
