@@ -1,7 +1,7 @@
 public class App {
     public static void main(String[] args) {
         int numChairs = 3; // buffer size
-        int totalCustomers = 10; // total number of customers
+        int totalCustomers = 100; // total number of customers
 
         System.out.println("");
         System.out.println("Quantidade de cadeiras da barbearia: " + numChairs);

@@ -49,7 +49,7 @@ class BarberShop {
                 System.out.println("Uma cabeça foi raspada. Cadeiras ocupadas: " + waitingCustomers);
 
                 try {
-                    Thread.sleep(3000); // Barber takes 3 seconds to cut hair
+                    Thread.sleep(1500); // Barber takes 1.5 seconds to cut hair
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
