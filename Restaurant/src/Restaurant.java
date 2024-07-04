@@ -9,7 +9,9 @@ public class Restaurant {
 
     private final int capacity;
     private final Lock lock; 
+    private final Condition isFull;
     private final Condition hasWhereSit;
+
     private int occupiedChairs;
     private Queue queue;
   //  private Queue<Customer> queue = new LinkedList<>();
@@ -17,23 +19,41 @@ public class Restaurant {
     public Restaurant(){
         this.capacity = 5;
         this.lock = new ReentrantLock();
+        this.isFull = lock.newCondition();
         this.hasWhereSit = lock.newCondition();
         this.occupiedChairs = 0;
         this.queue = new Queue();
+        
     }
 
     public void dinner(Customer customer) throws InterruptedException {
         lock.lock();
         try{
+            // has more customers than chairs to occupate
             while(occupiedChairs >= capacity){
-                //queue.add(customer);
+                
                 queue.enqueue(customer.getName());
                 System.out.println("fila de espera:" + queue.printQueue());
-                hasWhereSit.await();
-                queue.dequeueData(customer.getName());
+                isFull.await();
+                
             }
+            
+            if (!queue.isEmpty() && queue.peek() != customer.getName()) {
+                 hasWhereSit.wait();
+                
+            }
+            
+            if (!queue.isEmpty() && queue.peek() == customer.getName()) {
+                queue.dequeueData(customer.getName());
+                
+            }
+            
             occupiedChairs++;
             System.out.println(customer.getName() + " sentou. Lugares ocupados: " + occupiedChairs);
+            if (occupiedChairs < capacity) {
+                isFull.signal();
+            }
+            
         }
         finally{
             lock.unlock();
@@ -47,10 +67,8 @@ public class Restaurant {
             occupiedChairs--;
             System.out.println(customer.getName() + " saiu. Lugares ocupados: " + occupiedChairs);
             if (occupiedChairs == 0) {
-                hasWhereSit.signal();
-       /*   if (occupiedChairs < capacity) {
-                hasWhereSit.signal();
-            }*/
+                isFull.signal();
+            
             }
         }finally{
             lock.unlock();

@@ -28,7 +28,12 @@ public class Queue {
         rear.next = newNode;
         rear = newNode;
     }
-    
+    public String peek(){
+        return front.data; 
+    }
+    public boolean isEmpty(){
+        return front == null;
+    }
     public String dequeueData(String data){
         Node x;
         x = front;
