@@ -4,7 +4,9 @@ class Customer implements Runnable {
 
     private String name;
     private final Restaurant restaurant;
+   
 
+    // generating a radom number
     Random random = new Random();
     int min = 1000;
     int max = 3000;
@@ -13,6 +15,7 @@ class Customer implements Runnable {
     public Customer(String name, Restaurant restaurant) {
         this.restaurant = restaurant;
         this.name = name;
+    
     }
 
     public String getName(){
@@ -21,9 +24,10 @@ class Customer implements Runnable {
     @Override
     public void run() {
         try{
-            restaurant.dinner(this);
-            Thread.sleep(randomNumber);
-            restaurant.getOut(this);
+            restaurant.dinner(this); // try to enter on restaurant
+            Thread.sleep(randomNumber); // diferent people has diferent eat time
+            restaurant.getOut(this); // leaves restaurant
+            
         } catch (InterruptedException e){
             e.printStackTrace();
         }

@@ -9,7 +9,7 @@ class Node {
 }
 
 public class Queue {
-    private Node front; // início da fila
+    public Node front; // início da fila
     private Node rear;  // fim da fila
 
     public Queue() {
@@ -20,6 +20,10 @@ public class Queue {
     public void enqueue(String data) {
 
         Node newNode = new Node(data);
+
+        if (this.inQueue(data)){
+            return;
+        }
 
         if (rear == null) {
             front = rear = newNode;
@@ -46,6 +50,18 @@ public class Queue {
         }
         return data + " não está na fila.";
 
+    }
+
+    public boolean inQueue(String data){
+        Node x = front;
+
+        while (x!= null) {
+            if (x.data == data) {
+                return true;
+            }
+            x = x.next;
+        }
+        return false;
     }
 
     public String printQueue(){
