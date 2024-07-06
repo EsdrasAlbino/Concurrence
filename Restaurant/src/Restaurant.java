@@ -8,7 +8,7 @@ public class Restaurant {
     private final int capacity; //qnt of chairs 
     private final Lock lock; 
     private final Condition isFull; // flag
-    private final Condition hasWhereSit;
+    
 
     private int occupiedChairs; 
     private Queue queue;
@@ -20,32 +20,31 @@ public class Restaurant {
         this.isFull = lock.newCondition();
         this.occupiedChairs = 0;
         this.queue = new Queue();
-        this.hasWhereSit = lock.newCondition();
+        
         
     }
 
     public void dinner(Customer customer) throws InterruptedException {
-        lock.lock();
+        lock.lock(); //critical region because of occupiedChairs
         try {
-            while (occupiedChairs >= capacity || (!queue.isEmpty() && !queue.peek().equals(customer.getName()))) {
+            while (occupiedChairs >= capacity || (!queue.isEmpty() && !queue.peek().equals(customer.getName()))) { 
+                // full hall or the first of the queue is the current thread
                 if (occupiedChairs >= capacity) {
                     queue.enqueue(customer.getName());
-                    System.out.println("fila de espera: " + queue.printQueue());
+                    System.out.println("fila de espera: " + queue.printQueue()); // enter on a wait queue
                 
                 }
-                isFull.await();
+                isFull.await();// the hall is full
             }
 
-            if (!queue.isEmpty() && queue.peek().equals(customer.getName())) {
+            if (!queue.isEmpty() && queue.peek().equals(customer.getName())) { // if the current thread is the next on queue and has where to sit, dequeue
                 queue.dequeueData(customer.getName());
             }
 
-            occupiedChairs++;
-            System.out.println(customer.getName() + " sentou. Lugares ocupados: " + occupiedChairs);
+            occupiedChairs++; 
+            System.out.println(customer.getName() + " sentou. Lugares ocupados: " + occupiedChairs); // enter on hall
 
-            if (occupiedChairs < capacity) {
-                hasWhereSit.signalAll();
-            }
+    
         }
         
         finally{
@@ -58,21 +57,15 @@ public class Restaurant {
         lock.lock();
         try {
             occupiedChairs--;
-            System.out.println(customer.getName() + " saiu. Lugares ocupados: " + occupiedChairs);
+            System.out.println(customer.getName() + " saiu. Lugares ocupados: " + occupiedChairs); // customer get out
 
             if (occupiedChairs == 0) {
-                isFull.signalAll();
-            } else {
-                hasWhereSit.signalAll();
-            }
+                
+                isFull.signalAll(); // the hall isn't full anymore, so wake up the other threads to occupate the chairs
+                //isFull.signal(); // try to run this way too, you'll see one thread enter on hall and getting out imediatly
+            } 
         }
-       /*  try{
-            occupiedChairs--;
-            System.out.println(customer.getName() + " saiu. Lugares ocupados: " + occupiedChairs);
-            if (occupiedChairs == 0) {
-                isFull.signalAll();
-            }
-        }*/finally{
+       finally{
             lock.unlock();
         }
 
