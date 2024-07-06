@@ -29,7 +29,7 @@ class BarberShop {
             waitingCustomers++;
             System.out.println(
                     Thread.currentThread().getName() + " sentou-se esperando. Cadeiras ocupadas: " + waitingCustomers);
-            hasCostumer.signal();
+            hasCostumer.signal(); // wake up barber
 
         } finally {
             lock.unlock();
