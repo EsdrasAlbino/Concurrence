@@ -1,4 +1,4 @@
-package bathroom;
+package Concurrence.bathroom;
 
 class Person implements Runnable {
 
