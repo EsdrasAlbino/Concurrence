@@ -1,5 +1,3 @@
-package Concurrence.bathroom;
-
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -28,11 +26,13 @@ public class Bathroom {
 
             // Increment the number of men in the bathroom
             menInBathroom++;
+
+            System.out.println("Homem entrou: " + men.ID + " - " + " Homens no banheiro: " + menInBathroom);
         } finally {
             lock.unlock();
         }
 
-        System.out.println("Homem entrou: " + men.ID + " - " + " Homens no banheiro: " + menInBathroom);
+        
     }
 
     public void menExit(Person men) {
@@ -45,12 +45,14 @@ public class Bathroom {
             if (menInBathroom == 0) {
                 womenBreak.signalAll();
             }
+       
+            System.out.println("Homem saiu: " + men.ID + " - " + " Homens no banheiro: " + menInBathroom);
         } finally {
             lock.unlock();
         }
 
         capacitySemaphore.release();
-        System.out.println("Homem saiu: " + men.ID + " - " + " Homens no banheiro: " + menInBathroom);
+        
     }
 
     public void womanInside(Person women) throws InterruptedException {
@@ -65,11 +67,13 @@ public class Bathroom {
 
             // Increment the number of women in the bathroom
             womanInBathroom++;
+
+            System.out.println("Mulher entrou: " + women.ID + " - " + " Mulheres no banheiro: " + womanInBathroom);
         } finally {
             lock.unlock();
         }
 
-        System.out.println("Mulher entrou: " + women.ID + " - " + " Mulheres no banheiro: " + womanInBathroom);
+        
     }
 
     public void womanExit(Person women) {
@@ -82,23 +86,15 @@ public class Bathroom {
             if (womanInBathroom == 0) {
                 menBreak.signalAll();
             }
+
+            System.out.println("Mulher saiu: " + women.ID + " - " + " Mulheres no banheiro: " + womanInBathroom);
         } finally {
             lock.unlock();
         }
 
         capacitySemaphore.release();
-        System.out.println("Mulher saiu: " + women.ID + " - " + " Mulheres no banheiro: " + womanInBathroom);
+        
     }
 
-    public static void main(String[] args) {
-        Bathroom bathroom = new Bathroom();
-
-        // Create and start multiple threads for men and women
-        for (int i = 0; i < 10; i++) {
-            Thread men = new Thread(new Person(i, "Homem", bathroom));
-            Thread woman = new Thread(new Person(i, "Mulher", bathroom));
-            men.start();
-            woman.start();
-        }
-    }
+   
 }
