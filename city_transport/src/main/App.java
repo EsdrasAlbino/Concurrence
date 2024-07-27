@@ -13,6 +13,7 @@ public class App {
             Thread passenger = new Thread(new Passenger(busSystem));
             passenger.setName("passageiro" + i);
             passenger.start(); // .run()  
+            
         }
 
         Thread bus1 = new Thread(new Bus(busSystem), "bus1");

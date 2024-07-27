@@ -3,17 +3,16 @@ package main;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.Semaphore;
 
 public class BusSystem {
  
     private int availableSeats;
     private int passengersAtBusStop;
     private final Lock lock;
-    private final Semaphore busCapacity = new Semaphore(20);
     private final Condition PassengerInStop;
     private final Condition BusInStop;
     private final Condition BusIsFull;
+    private  boolean emptyBus = false;
 
         //constructor
     public BusSystem(){
@@ -32,7 +31,11 @@ public class BusSystem {
             System.out.println("Ônibus "+Thread.currentThread().getName()+" chegou na parada.");
             BusInStop.signalAll();//avisar que onibus chegou na parada
             availableSeats = 20;
-            
+            BusIsFull.signalAll();
+            if (passengersAtBusStop == 0) {
+                //PassengerInStop.signal();
+                emptyBus = true;
+            }
         }   
         finally{
             lock.unlock();
@@ -42,8 +45,10 @@ public class BusSystem {
         lock.lock();
         try{
                 while (true) {
-                    PassengerInStop.await();
-                    System.out.println("Ônibus "+Thread.currentThread().getName()+" saiu da parada de ônibus com " + (50 - availableSeats)+" passageiros.");
+                    if(!emptyBus){
+                        PassengerInStop.await();
+                    }
+                    System.out.println("Ônibus "+Thread.currentThread().getName()+" saiu da parada de ônibus com " + (20 - availableSeats)+" passageiros.");
                     
                     break;
                 }
@@ -54,28 +59,28 @@ public class BusSystem {
         finally{
             lock.unlock();
         }
-        busCapacity.release();
+        //busCapacity.release();
 
     }
     public void getBus(){
-        busCapacity.acquire();
 
         lock.lock();
         try{
+            //busCapacity.acquire();
             System.out.println("Passageiro " + Thread.currentThread().getName() + " chegou na parada");
             passengersAtBusStop++;
             BusInStop.await();//wait for the bus to arrive 
 
             while(availableSeats == 0 ){// if there isn't where seat
                 System.out.println("Onibus cheio, " + Thread.currentThread().getName() + " terá que esperar pelo próximo ônibus.");
-               // BusIsFull.await(); // wait for the next bus
+               BusIsFull.await(); // wait for the next bus
                 
             }
             availableSeats--;
             passengersAtBusStop --;
             System.out.println("Passageiro " + Thread.currentThread().getName() + " entrou no ônibus, assentos disponíveis: " + availableSeats);
     
-            if (passengersAtBusStop == 0) {
+            if (availableSeats == 0) {
                 PassengerInStop.signal();
             }
         }

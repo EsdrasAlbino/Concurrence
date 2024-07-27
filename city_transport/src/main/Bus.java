@@ -26,7 +26,7 @@ class Bus implements Runnable{
         try {
             Thread.sleep(randomNumber);
             busSystem.busArrived();
-            Thread.sleep(500); // simula embarque
+            //Thread.sleep(500); // simula embarque
             busSystem.busLeft();
         } catch (InterruptedException e){
             e.printStackTrace();
