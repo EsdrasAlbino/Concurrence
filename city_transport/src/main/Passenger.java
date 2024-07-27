@@ -1,19 +1,19 @@
 package main;
 
 class Passenger implements Runnable{
-   // private String name;
+
     private final BusSystem busSystem;
     
+    //constructor
     public Passenger(BusSystem busSystem){
         this.busSystem = busSystem;
-        //this.name = name;
     } 
 
 
     @Override
     public void run(){
         try {
-            busSystem.getBus();
+            busSystem.getBus(); // passenger arrive at stop
         } catch (Exception e) {
             // TODO: handle exception
         }

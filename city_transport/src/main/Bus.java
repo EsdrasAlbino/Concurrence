@@ -4,7 +4,6 @@ import java.util.Random;
 
 class Bus implements Runnable{
 
-   // private String name;
     private final BusSystem busSystem;
     
     // generating a random number
@@ -13,21 +12,17 @@ class Bus implements Runnable{
     int max = 3000;
     int randomNumber = random.nextInt((max - min)+1)+ min;
     
-    
+    //constructor
     public Bus(BusSystem busSystem){
         this.busSystem = busSystem;
-        //this.name = name;
     } 
-
-   
 
     @Override
     public void run(){
         try {
-            Thread.sleep(randomNumber);
-            busSystem.busArrived();
-            //Thread.sleep(500); // simula embarque
-            busSystem.busLeft();
+            Thread.sleep(randomNumber); // interval between bus
+            busSystem.busArrived(); // bus arrived stop
+            busSystem.busLeft(); // bus left stop
         } catch (InterruptedException e){
             e.printStackTrace();
         }
